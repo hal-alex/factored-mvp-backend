@@ -62,7 +62,7 @@ class Advance(models.Model):
     id = ShortUUIDField(
         primary_key=True,
         length=8,
-        alphabet="abcdefghijklmnopqrstuvwxyz0123456789",
+        alphabet="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",
         editable=False,
         unique=True
     )
@@ -92,4 +92,26 @@ class Advance(models.Model):
 
     admin_comment = models.TextField(max_length=1000, default="")
 
+
+class AddressHistory(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+        unique=True
+    )
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    first_line_address = models.CharField(max_length=255)
+    second_line_address = models.CharField(max_length=255)
+    postcode = models.CharField(max_length=255)
+    town_or_city = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
+    start_date = models.CharField(max_length=255)
+    end_date = models.CharField(max_length=255)
+    duration = models.IntegerField()
 
