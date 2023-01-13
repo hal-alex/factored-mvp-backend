@@ -1,18 +1,7 @@
-from django.urls import (
-    path,
-    include,
-)
-
-from rest_framework.routers import DefaultRouter
-
-from addresshistory import views
-
-router = DefaultRouter()
-
-router.register('addresshistories', views.AddressHistoryViewset)
-
-app_name = 'addresshistory'
+from django.urls import path
+from .views import AddressHistoryListView, AddressHistoryDetailView
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', AddressHistoryListView.as_view()),
+    path('<pk>/', AddressHistoryDetailView.as_view())
 ]

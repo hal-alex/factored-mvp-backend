@@ -14,6 +14,8 @@ class AddressHistorySerializer(serializers.ModelSerializer):
             "country",
             "start_date",
             "end_date",
-            "duration",]
-        read_only_fields = ["id", "user"]
+            "duration",
+            "user_id",
+            ]
+        read_only_fields = ["id", "user_id"]
 
