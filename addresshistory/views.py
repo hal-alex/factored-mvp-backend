@@ -19,7 +19,7 @@ class AddressHistoryListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        print(request.data)
+        # print(request.data)
         address_to_create = AddressHistorySerializer(data=request.data) 
         try:
             address_to_create.is_valid()
@@ -63,7 +63,7 @@ class AddressHistoryDetailView(APIView):
         if address_to_update.user != request.user:
             raise PermissionDenied("Unauthorised")
         updated_address = AddressHistorySerializer(address_to_update, data=request.data)
-        print(updated_address)
+        # print(updated_address)
         try:
             updated_address.is_valid(raise_exception=True)
             updated_address.save()
@@ -75,7 +75,7 @@ class AddressHistoryDetailView(APIView):
         address_to_delete = self.get_address(pk)
         if address_to_delete.user != request.user:
             raise PermissionDenied("Unauthorised")
-        print("duration", address_to_delete.duration)
+        # print("duration", address_to_delete.duration)
         address_to_delete.delete()
 
         # all_addresses_belonging_to_user = AddressHistory.objects.filter(user_id=request.user.id)

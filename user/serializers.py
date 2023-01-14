@@ -48,6 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
         "mobile_number",
         "is_identity_verified",
         "has_address_history",
+        "total_address_duration",
         ]
         extra_kwargs = {'password': {'write_only': True}}
 
