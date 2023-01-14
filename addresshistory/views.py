@@ -58,6 +58,19 @@ class AddressHistoryDetailView(APIView):
         except AddressHistory.DoesNotExist:
             raise NotFound("Address not found!")
 
+    def patch(self, request, pk):
+        address_to_update = self.get_address(pk)
+        if address_to_update.user != request.user:
+            raise PermissionDenied("Unauthorised")
+        updated_address = AddressHistorySerializer(address_to_update, data=request.data)
+        print(updated_address)
+        try:
+            updated_address.is_valid(raise_exception=True)
+            updated_address.save()
+            return Response(updated_address.data, status=status.HTTP_202_ACCEPTED)
+        except:
+            return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
     def delete(self, request, pk):
         address_to_delete = self.get_address(pk)
         if address_to_delete.user != request.user:
