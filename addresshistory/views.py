@@ -25,13 +25,11 @@ class AddressHistoryListView(APIView):
             address_to_create.is_valid()
             address_to_create.save(user_id=request.user.id)
             # print(User.objects.get(id=request.user.id).has_address_history)
-            all_addresses_belonging_to_user = AddressHistory.objects.filter(user_id=request.user.id)
+            # all_addresses_belonging_to_user = AddressHistory.objects.filter(user_id=request.user.id)
             # print(all_addresses_belonging_to_user)
-            total = 0
-            for address in all_addresses_belonging_to_user:
-                total += address.duration
-                if total >= 36:
-                    requested_user = User.objects.get(id=request.user.id) 
+            requested_user = User.objects.get(id=request.user.id) 
+            requested_user.total_address_duration += request.data.duration
+            if requested_user.total_address_duration >= 36:
                     requested_user.has_address_history = True
                     requested_user.save()
             return Response(address_to_create.data, status=status.HTTP_201_CREATED)
@@ -65,15 +63,13 @@ class AddressHistoryDetailView(APIView):
 
         address_to_delete.delete()
 
-        all_addresses_belonging_to_user = AddressHistory.objects.filter(user_id=request.user.id)
-            # print(all_addresses_belonging_to_user)
-        total = 0
-        for address in all_addresses_belonging_to_user:
-            total += address.duration
-            if total < 36:
-                requested_user = User.objects.get(id=request.user.id) 
-                requested_user.has_address_history = False
-                requested_user.save()
+        # all_addresses_belonging_to_user = AddressHistory.objects.filter(user_id=request.user.id)
+        # print(all_addresses_belonging_to_user)
+        requested_user = User.objects.get(id=request.user.id) 
+        requested_user.total_address_duration += request.data.duration
+        if requested_user.total_address_duration < 36:
+            requested_user.has_address_history = False
+            requested_user.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 

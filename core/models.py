@@ -48,6 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     is_identity_verified = models.BooleanField(default=False)
     has_address_history = models.BooleanField(default=False)
+    total_address_duration = models.PositiveIntegerField(default=0)
 
     username = None
 
@@ -113,5 +114,5 @@ class AddressHistory(models.Model):
     country = models.CharField(max_length=255)
     start_date = models.CharField(max_length=255)
     end_date = models.CharField(max_length=255)
-    duration = models.IntegerField()
+    duration = models.PositiveIntegerField()
 
