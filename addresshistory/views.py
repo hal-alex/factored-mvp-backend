@@ -24,11 +24,9 @@ class AddressHistoryListView(APIView):
         try:
             address_to_create.is_valid()
             address_to_create.save(user_id=request.user.id)
-            # print(User.objects.get(id=request.user.id).has_address_history)
-            # all_addresses_belonging_to_user = AddressHistory.objects.filter(user_id=request.user.id)
-            # print(all_addresses_belonging_to_user)
             requested_user = User.objects.get(id=request.user.id) 
             requested_user.total_address_duration += request.data["duration"]
+            requested_user.save()
             if requested_user.total_address_duration >= 36:
                     requested_user.has_address_history = True
                     requested_user.save()
@@ -40,9 +38,6 @@ class AddressHistoryListView(APIView):
     def get(self, request):
         addresses = AddressHistory.objects.filter(user_id=request.user.id)
         serialized_addresses = AddressHistorySerializer(addresses, many=True)
-        # other_data = serialized_addresses.data[:]
-        # for key, value in other_data.items():
-        #     print(key, value)
         return Response(serialized_addresses.data, status=status.HTTP_200_OK)
 
 
@@ -75,16 +70,18 @@ class AddressHistoryDetailView(APIView):
         address_to_delete = self.get_address(pk)
         if address_to_delete.user != request.user:
             raise PermissionDenied("Unauthorised")
+
         # print("duration", address_to_delete.duration)
+
+        requested_user = User.objects.get(id=request.user.id) 
+        requested_user.total_address_duration -= address_to_delete.duration
+        requested_user.save()
+        if requested_user.total_address_duration < 36:
+            requested_user.has_address_history = False
+            requested_user.save()
+        
         address_to_delete.delete()
 
-        # all_addresses_belonging_to_user = AddressHistory.objects.filter(user_id=request.user.id)
-        # print(all_addresses_belonging_to_user)
-        # requested_user = User.objects.get(id=request.user.id) 
-        # requested_user.total_address_duration -= request.data["duration"]
-        # if requested_user.total_address_duration < 36:
-        #     requested_user.has_address_history = False
-        #     requested_user.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
