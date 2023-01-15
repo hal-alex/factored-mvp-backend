@@ -57,11 +57,26 @@ class AddressHistoryDetailView(APIView):
         address_to_update = self.get_address(pk)
         if address_to_update.user != request.user:
             raise PermissionDenied("Unauthorised")
+        old_address_duration = address_to_update.duration
+        print(old_address_duration)
+        new_address_duration = request.data["duration"]
+        print(new_address_duration)
+        duration_difference = new_address_duration - old_address_duration
         updated_address = AddressHistorySerializer(address_to_update, data=request.data)
-        # print(updated_address)
+        print(duration_difference)
         try:
             updated_address.is_valid(raise_exception=True)
             updated_address.save()
+            if duration_difference != 0:
+                requested_user = User.objects.get(id=request.user.id) 
+                requested_user.total_address_duration += duration_difference
+                requested_user.save()
+                if requested_user.total_address_duration >= 36:
+                    requested_user.has_address_history = True
+                    requested_user.save()
+                elif requested_user.total_address_duration < 36:
+                    requested_user.has_address_history = False
+                    requested_user.save() 
             return Response(updated_address.data, status=status.HTTP_202_ACCEPTED)
         except:
             return Response(status=status.HTTP_422_UNPROCESSABLE_ENTITY)
