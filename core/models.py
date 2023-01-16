@@ -52,7 +52,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     username = None
 
-
     objects = UserManager()
 
     USERNAME_FIELD = "email"
@@ -72,6 +71,9 @@ class Advance(models.Model):
         on_delete=models.CASCADE
     )
 
+    # <--- Fields provided by user --- >
+
+    # Basic details of the property
     description = models.TextField(max_length=1000)
     reason = models.TextField(max_length=100, default="")
     first_line_address = models.CharField(max_length=255)
@@ -80,19 +82,45 @@ class Advance(models.Model):
     town_or_city = models.CharField(max_length=255)
     country = models.CharField(max_length=255)
     monthly_rent = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+
+    # Document uploads for the property
     lease_agreement_file = models.FileField()
     rent_protection_policy_file = models.FileField()
     tenant_vetting_file = models.FileField()
-    # amount_of_rent_selling
+
+    # This is how much the user would like to borrow
+    # Previous value was amount_of_rent_selling
     loan_amount = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-    # estimated_monthly_payment
-    estimated_loan_monthly_payment = models.DecimalField(max_digits=8, 
-        decimal_places=2, default=0)
-    
+
+    # Bank details of the beneficiary
     name_on_bank_account = models.CharField(max_length=255)
     bank_account_number = models.CharField(max_length=100)
     sort_code_bank_account = models.CharField(max_length=100)
 
+    # Total duration of the loan
+    loan_term = models.PositiveIntegerField(default=0)
+
+    # <--- Derived fields --- >
+    # Estimate of monthly loan payments
+    estimated_loan_monthly_payment = models.DecimalField(max_digits=8, 
+        decimal_places=2, default=0)
+    
+    # Interest rate applied to the loan
+    loan_interest_rate = models.DecimalField(max_digits=6, decimal_places=4, default=0)
+
+    # Total loan amount (loan term * estimated_loan_monthly_payment)
+    total_repayble = models.DecimalField(max_digits=8, 
+        decimal_places=2, default=0)
+    
+    # Total amount that the borrower has paid already
+    total_paid_already = models.DecimalField(max_digits=8, 
+        decimal_places=2, default=0)
+    
+    # How many months left of this loan 
+    # Equals loan_term minus elapsed time
+    remaining_term = models.PositiveIntegerField(default=0)
+
+    # Comment for the admin panel for this loan
     admin_comment = models.TextField(max_length=1000, default="")
 
 
