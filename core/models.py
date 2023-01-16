@@ -73,6 +73,20 @@ class Advance(models.Model):
         on_delete=models.CASCADE
     )
 
+    ADVANCE_STATE_OPTIONS = [
+        ("Incomplete", "Incomplete"),
+        ("Submitted", "Submitted"),
+        ("Active", "Active"),
+        ("In arrears", "In arrears"),
+        ("Repaid", "Repaid"),
+    ]
+
+    status = models.CharField(
+        max_length=16,
+        choices=ADVANCE_STATE_OPTIONS,
+        default="Incomplete"
+    )
+
     # <--- Fields provided by user --- >
 
     # Basic details of the property
@@ -100,7 +114,19 @@ class Advance(models.Model):
     sort_code_bank_account = models.CharField(max_length=100)
 
     # Total duration of the loan
-    loan_term = models.PositiveIntegerField(default=0)
+
+    LOAN_TERMS = [
+        (3, "3 months"),
+        (6, "6 months"),
+        (12, "12 months"),
+        (24, "24 months"),
+        (36, "36 months"),
+        (48, "48 months"),
+        (60, "60 months")
+    ]
+
+    loan_term = models.PositiveIntegerField(choices=LOAN_TERMS,
+        default=3)
 
     # <--- Derived fields --- >
 
@@ -115,7 +141,19 @@ class Advance(models.Model):
         decimal_places=2, default=0)
     
     # Interest rate applied to the loan
-    loan_interest_rate = models.DecimalField(max_digits=6, decimal_places=4, default=0)
+
+    LOAN_RATES = [
+        (0.2399, "23.99%"),
+        (0.2199, "21.99%"),
+        (0.1999, "19.99%"),
+        (0.1799, "17.99%"),
+        (0.1599, "15.99%"),
+        (0.1399, "13.99%"),
+        (0.1299, "12.99%")
+    ]
+
+    loan_interest_rate = models.DecimalField(choices=LOAN_RATES,
+        max_digits=8, decimal_places=5, default=0.2399)
 
     # Total loan amount (loan term * estimated_loan_monthly_payment)
     total_repayble = models.DecimalField(max_digits=8, 
