@@ -1,6 +1,8 @@
 import uuid
 from shortuuid.django_fields import ShortUUIDField
 
+from django.utils.timezone import now 
+
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import (
@@ -88,7 +90,7 @@ class Advance(models.Model):
     rent_protection_policy_file = models.FileField()
     tenant_vetting_file = models.FileField()
 
-    # This is how much the user would like to borrow
+    # This is how much the user would like to borrow, excludes interest
     # Previous value was amount_of_rent_selling
     loan_amount = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
@@ -101,6 +103,13 @@ class Advance(models.Model):
     loan_term = models.PositiveIntegerField(default=0)
 
     # <--- Derived fields --- >
+
+    # When the advance was first created
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    # When the advance was last modified
+    modified_on = models.DateTimeField(auto_now=True)
+
     # Estimate of monthly loan payments
     estimated_loan_monthly_payment = models.DecimalField(max_digits=8, 
         decimal_places=2, default=0)
@@ -119,6 +128,9 @@ class Advance(models.Model):
     # How many months left of this loan 
     # Equals loan_term minus elapsed time
     remaining_term = models.PositiveIntegerField(default=0)
+
+    # Next payment date - when the next loan payment is due by
+    # next_payment_date = models.DateField()
 
     # Comment for the admin panel for this loan
     admin_comment = models.TextField(max_length=1000, default="")
