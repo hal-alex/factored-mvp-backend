@@ -24,20 +24,31 @@ class AdvanceSerializer(serializers.ModelSerializer):
             "status",
             ]
         read_only_fields = ["id", "user_id", "created_on", "status"]
+        
+        # fields = "__all__"
 
 
-class AdvanceDetailSerializer(AdvanceSerializer):
-    class Meta(AdvanceSerializer.Meta):
-        fields = AdvanceSerializer.Meta.fields
-        fields = ["name_on_bank_account", 
-        "monthly_rent",
-        # "lease_agreement_file",
-        # "rent_protection_policy_file",
-        # "tenant_vetting_file",
-        # "amount_of_rent_selling",
-        # "estimated_monthly_payment",
-        "name_on_bank_account",
-        "bank_account_number",
-        "sort_code_bank_account",
+class AdvanceDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Advance
+        fields = [
+            "description",
+            "reason",
+            "first_line_address",
+            "second_line_address",
+            "postcode",
+            "town_or_city",
+            "country",
+            "monthly_rent",
+            "lease_agreement_file",
+            "rent_protection_policy_file",
+            "tenant_vetting_file",
+            "loan_amount",
+            "loan_term",
+            "name_on_bank_account",
+            "bank_account_number",
+            "sort_code_bank_account"
         ]
+
+        # fields = "__all__"
 
