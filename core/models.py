@@ -79,14 +79,15 @@ class Advance(models.Model):
     postcode = models.CharField(max_length=255)
     town_or_city = models.CharField(max_length=255)
     country = models.CharField(max_length=255)
-    monthly_rent = models.DecimalField(max_digits=8, decimal_places=2)
+    monthly_rent = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     lease_agreement_file = models.FileField()
     rent_protection_policy_file = models.FileField()
     tenant_vetting_file = models.FileField()
     # amount_of_rent_selling
-    loan_amount = models.DecimalField(max_digits=8, decimal_places=2)
+    loan_amount = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     # estimated_monthly_payment
-    estimated_loan_monthly_payment = models.DecimalField(max_digits=8, decimal_places=2)
+    estimated_loan_monthly_payment = models.DecimalField(max_digits=8, 
+        decimal_places=2, default=0)
     
     name_on_bank_account = models.CharField(max_length=255)
     bank_account_number = models.CharField(max_length=100)
