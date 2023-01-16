@@ -83,9 +83,10 @@ class Advance(models.Model):
     lease_agreement_file = models.FileField()
     rent_protection_policy_file = models.FileField()
     tenant_vetting_file = models.FileField()
-    amount_of_rent_selling = models.DecimalField(max_digits=8, decimal_places=2)
-
-    estimated_monthly_payment = models.DecimalField(max_digits=8, decimal_places=2)
+    # amount_of_rent_selling
+    loan_amount = models.DecimalField(max_digits=8, decimal_places=2)
+    # estimated_monthly_payment
+    estimated_loan_monthly_payment = models.DecimalField(max_digits=8, decimal_places=2)
     
     name_on_bank_account = models.CharField(max_length=255)
     bank_account_number = models.CharField(max_length=100)
