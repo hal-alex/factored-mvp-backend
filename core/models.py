@@ -93,10 +93,10 @@ class Advance(models.Model):
     description = models.TextField(max_length=1000)
 
     REASON_FOR_ADVANCE_CHOICES = [
-        ("Debt", "Consolidating debt"),
-        ("Improvement", "Home improvement/repair"),
-        ("Car", "Car"),
-        ("Occasion", "Special occasion/event"),
+        ("Consolidating debt", "Consolidating debt"),
+        ("Home improvement/repair", "Home improvement/repair"),
+        ("Car finacing", "Car finacing"),
+        ("Special occasion/event", "Special occasion/event"),
         ("Other", "Other"),
     ]
 

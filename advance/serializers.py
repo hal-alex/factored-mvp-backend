@@ -10,10 +10,12 @@ class AdvanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advance
         fields = ["id",
+            "description",
             "first_line_address",
             "second_line_address",
             "postcode",
             "town_or_city",
+            "reason",
             "loan_amount",
             "loan_term",
             "total_paid_already",
@@ -22,6 +24,7 @@ class AdvanceSerializer(serializers.ModelSerializer):
             "loan_interest_rate",
             "created_on",
             "status",
+            "monthly_rent",
             ]
         read_only_fields = ["id", "user_id", "created_on", "status"]
         
@@ -32,6 +35,7 @@ class AdvanceDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advance
         fields = [
+            "id",
             "description",
             "reason",
             "first_line_address",
