@@ -75,7 +75,7 @@ class Advance(models.Model):
 
     ADVANCE_STATE_OPTIONS = [
         ("Incomplete", "Incomplete"),
-        ("Submitted", "Submitted"),
+        ("Pending approval", "Pending approval"),
         ("Active", "Active"),
         ("In arrears", "In arrears"),
         ("Repaid", "Repaid"),
@@ -91,7 +91,20 @@ class Advance(models.Model):
 
     # Basic details of the property
     description = models.TextField(max_length=1000)
-    reason = models.TextField(max_length=100, default="")
+
+    REASON_FOR_ADVANCE_CHOICES = [
+        ("Debt", "Consolidating debt"),
+        ("Improvement", "Home improvement/repair"),
+        ("Car", "Car"),
+        ("Occasion", "Special occasion/event"),
+        ("Other", "Other"),
+    ]
+
+    reason = models.CharField(
+        max_length=100,
+        choices=REASON_FOR_ADVANCE_CHOICES,
+        default="Other"
+    )
     first_line_address = models.CharField(max_length=255)
     second_line_address = models.CharField(max_length=255)
     postcode = models.CharField(max_length=255)
