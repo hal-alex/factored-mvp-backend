@@ -11,6 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.authentication import TokenAuthentication
 
+terms_and_rates = [[3, 0.2399], [6, 0.2199], [12, 0.1999], [24, 0.1799],
+    [36, 0.1599], [48, 0.1399], [60, 0.1299]]
 
 class AdvanceListView(APIView):
     serializer_class = AdvanceSerializer
@@ -59,11 +61,17 @@ class AdvanceDetailedView(APIView):
     
     def patch(self, request, pk):
         advance_to_update = self.get_advance(pk=pk)
-        updated_advance = AdvanceSerializer(advance_to_update, data=request.data)
+        updated_advance = AdvanceSerializer(advance_to_update, data=request.data, partial=True)
 
         try:
             updated_advance.is_valid(raise_exception=True)
             updated_advance.save()
+            if request.data["loan_amount"] or request.data["loan_term"]:
+                for rate in terms_and_rates:
+                    if request.data["loan_term"] == rate[0]:
+                        selected_advance = Advance.objects.get(pk=pk)
+                        selected_advance.loan_interest_rate = rate[1]
+                        selected_advance.save()
             return Response(updated_advance.data, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             print(e)
