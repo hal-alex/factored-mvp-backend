@@ -86,7 +86,8 @@ class Advance(models.Model):
 
     status = models.CharField(
         max_length=25,
-        choices=ADVANCE_STATE_OPTIONS
+        choices=ADVANCE_STATE_OPTIONS,
+        default="Incomplete"
     )
 
     # <--- Fields provided by user --- >

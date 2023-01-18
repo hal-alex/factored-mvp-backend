@@ -108,7 +108,7 @@ class AdvanceDetailedView(APIView):
         except Exception as e:
             print(e)
             return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 
 

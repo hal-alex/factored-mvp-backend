@@ -17,20 +17,9 @@ class AdvanceSerializer(serializers.ModelSerializer):
             "town_or_city",
             "reason",
             "loan_amount",
-            "loan_term",
-            "total_paid_already",
-            "remaining_term",
-            "estimated_loan_monthly_payment",
-            "loan_interest_rate",
-            "created_on",
-            "status",
             "monthly_rent",
-            "name_on_bank_account",
-            "bank_account_number",
-            "sort_code_bank_account",
-            "is_submitting_loan",
             ]
-        read_only_fields = ["id", "user_id", "created_on", "status"]
+        read_only_fields = ["id", "user_id", "status"]
         
         # fields = "__all__"
 
@@ -57,8 +46,12 @@ class AdvanceDetailSerializer(serializers.ModelSerializer):
             "name_on_bank_account",
             "bank_account_number",
             "sort_code_bank_account",
-            "estimated_loan_monthly_payment"
+            "estimated_loan_monthly_payment",
+            "status",
+            "is_submitting_loan",
         ]
+
+        read_only_fields = ["id", "user_id", "status"]
 
         # fields = "__all__"
 
