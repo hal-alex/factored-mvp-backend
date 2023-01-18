@@ -11,6 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.authentication import TokenAuthentication
 
+import math
+
 terms_and_rates = [[3, 0.2399], [6, 0.2199], [12, 0.1999], [24, 0.1799],
     [36, 0.1599], [48, 0.1399], [60, 0.1299]]
 
@@ -66,12 +68,25 @@ class AdvanceDetailedView(APIView):
         try:
             updated_advance.is_valid(raise_exception=True)
             updated_advance.save()
-            if request.data["loan_amount"] or request.data["loan_term"]:
+            selected_advance = Advance.objects.get(pk=pk)
+            # print(type(request.data["loan_amount"]))
+            # problem with fetching loan amount on the initial patch request
+            # look into how to bypass it until stage 3 is hit
+            if request.data["loan_amount"] and request.data["loan_term"]:
                 for rate in terms_and_rates:
                     if request.data["loan_term"] == rate[0]:
-                        selected_advance = Advance.objects.get(pk=pk)
                         selected_advance.loan_interest_rate = rate[1]
                         selected_advance.save()
+                term = selected_advance.loan_term
+                interest_rate = selected_advance.loan_interest_rate
+                amount = selected_advance.loan_amount
+                interest_rate_monthly = interest_rate / 12
+                x = math.pow(1 + interest_rate_monthly, term)
+                selected_advance.estimated_loan_monthly_payment = round(((
+                    float(amount) * x * interest_rate_monthly
+                ) / (x - 1)), 2)
+                selected_advance.save()
+                
             return Response(updated_advance.data, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             print(e)

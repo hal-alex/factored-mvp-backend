@@ -47,11 +47,12 @@ class AdvanceDetailSerializer(serializers.ModelSerializer):
             "lease_agreement_file",
             "rent_protection_policy_file",
             "tenant_vetting_file",
-            "loan_amount",
+            # "loan_amount",
             "loan_term",
             "name_on_bank_account",
             "bank_account_number",
-            "sort_code_bank_account"
+            "sort_code_bank_account",
+            "estimated_loan_monthly_payment"
         ]
 
         # fields = "__all__"
