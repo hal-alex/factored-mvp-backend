@@ -25,6 +25,10 @@ class AdvanceSerializer(serializers.ModelSerializer):
             "created_on",
             "status",
             "monthly_rent",
+            "name_on_bank_account",
+            "bank_account_number",
+            "sort_code_bank_account",
+            "is_submitting_loan",
             ]
         read_only_fields = ["id", "user_id", "created_on", "status"]
         

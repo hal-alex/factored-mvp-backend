@@ -63,12 +63,20 @@ class AdvanceDetailedView(APIView):
     
     def patch(self, request, pk):
         advance_to_update = self.get_advance(pk=pk)
-        updated_advance = AdvanceSerializer(advance_to_update, data=request.data, partial=True)
+        selected_advance = Advance.objects.get(pk=pk)
 
+        print(selected_advance.status)
+
+        if selected_advance.status == "Pending approval":
+            return Response({"message": "Action not allowed"}, 
+            status=status.HTTP_401_UNAUTHORIZED)
+
+        updated_advance = AdvanceSerializer(advance_to_update, data=request.data, partial=True)
+        print(selected_advance.status)
         try:
             updated_advance.is_valid(raise_exception=True)
             updated_advance.save()
-            selected_advance = Advance.objects.get(pk=pk)
+            print(selected_advance.status)
             # print(type(request.data["loan_amount"]))
             # problem with fetching loan amount on the initial patch request
             # look into how to bypass it until stage 3 is hit
@@ -89,7 +97,12 @@ class AdvanceDetailedView(APIView):
                     amount * x * interest_rate_monthly
                 ) / (x - 1))
                 selected_advance.save()
-                
+                print(selected_advance.status)
+            if "is_submitting_loan" in request.data and request.data["is_submitting_loan"] == True:
+                print(selected_advance.status)
+                selected_advance.status = "Pending approval"
+                selected_advance.save()
+                print(selected_advance.status)
             return Response(updated_advance.data, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             print(e)

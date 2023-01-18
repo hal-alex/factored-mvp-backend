@@ -11,6 +11,9 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 
+from django.core.validators import MinValueValidator
+
+
 class UserManager(BaseUserManager):
     """Manager for users"""
 
@@ -82,9 +85,8 @@ class Advance(models.Model):
     ]
 
     status = models.CharField(
-        max_length=16,
-        choices=ADVANCE_STATE_OPTIONS,
-        default="Incomplete"
+        max_length=25,
+        choices=ADVANCE_STATE_OPTIONS
     )
 
     # <--- Fields provided by user --- >
@@ -119,7 +121,8 @@ class Advance(models.Model):
 
     # This is how much the user would like to borrow, excludes interest
     # Previous value was amount_of_rent_selling
-    loan_amount = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    loan_amount = models.DecimalField(max_digits=8, 
+        decimal_places=2, default=0, validators=[MinValueValidator(2999)])
 
     # Bank details of the beneficiary
     name_on_bank_account = models.CharField(max_length=255)
@@ -140,6 +143,8 @@ class Advance(models.Model):
 
     loan_term = models.PositiveIntegerField(choices=LOAN_TERMS,
         default=3)
+
+    is_submitting_loan = models.BooleanField(default=False)
 
     # <--- Derived fields --- >
 
