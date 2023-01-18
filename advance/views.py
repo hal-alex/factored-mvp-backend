@@ -72,19 +72,22 @@ class AdvanceDetailedView(APIView):
             # print(type(request.data["loan_amount"]))
             # problem with fetching loan amount on the initial patch request
             # look into how to bypass it until stage 3 is hit
-            if request.data["loan_amount"] and request.data["loan_term"]:
+            if "loan_amount" in request.data and "loan_term" in request.data:
                 for rate in terms_and_rates:
                     if request.data["loan_term"] == rate[0]:
                         selected_advance.loan_interest_rate = rate[1]
                         selected_advance.save()
                 term = selected_advance.loan_term
                 interest_rate = selected_advance.loan_interest_rate
-                amount = selected_advance.loan_amount
-                interest_rate_monthly = interest_rate / 12
+                amount = float(selected_advance.loan_amount)
+                # print(type(amount))
+                interest_rate_monthly = float(interest_rate / 12)
+                # print(type(interest_rate_monthly))
                 x = math.pow(1 + interest_rate_monthly, term)
-                selected_advance.estimated_loan_monthly_payment = round(((
-                    float(amount) * x * interest_rate_monthly
-                ) / (x - 1)), 2)
+                # print(type(x))
+                selected_advance.estimated_loan_monthly_payment = ((
+                    amount * x * interest_rate_monthly
+                ) / (x - 1))
                 selected_advance.save()
                 
             return Response(updated_advance.data, status=status.HTTP_202_ACCEPTED)
