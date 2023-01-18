@@ -58,51 +58,52 @@ class AdvanceDetailedView(APIView):
     
     def delete(self, request, pk):
         advance_to_delete = self.get_advance(pk=pk)
+        
+        if advance_to_delete.status != "Incomplete":
+            return Response({"message": "Action not allowed"}, 
+            status=status.HTTP_401_UNAUTHORIZED)
+
         advance_to_delete.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     def patch(self, request, pk):
         advance_to_update = self.get_advance(pk=pk)
-        selected_advance = Advance.objects.get(pk=pk)
 
-        print(selected_advance.status)
+        print(advance_to_update.status)
 
-        if selected_advance.status == "Pending approval":
+        if advance_to_update.status != "Incomplete":
             return Response({"message": "Action not allowed"}, 
             status=status.HTTP_401_UNAUTHORIZED)
 
         updated_advance = AdvanceSerializer(advance_to_update, data=request.data, partial=True)
-        print(selected_advance.status)
+        print(advance_to_update.status)
         try:
             updated_advance.is_valid(raise_exception=True)
             updated_advance.save()
-            print(selected_advance.status)
-            # print(type(request.data["loan_amount"]))
-            # problem with fetching loan amount on the initial patch request
-            # look into how to bypass it until stage 3 is hit
+            print(advance_to_update.status)
             if "loan_amount" in request.data and "loan_term" in request.data:
                 for rate in terms_and_rates:
                     if request.data["loan_term"] == rate[0]:
-                        selected_advance.loan_interest_rate = rate[1]
-                        selected_advance.save()
-                term = selected_advance.loan_term
-                interest_rate = selected_advance.loan_interest_rate
-                amount = float(selected_advance.loan_amount)
+                        advance_to_update.loan_interest_rate = rate[1]
+                        advance_to_update.save()
+                term = advance_to_update.loan_term
+                interest_rate = advance_to_update.loan_interest_rate
+                amount = float(advance_to_update.loan_amount)
                 # print(type(amount))
                 interest_rate_monthly = float(interest_rate / 12)
                 # print(type(interest_rate_monthly))
                 x = math.pow(1 + interest_rate_monthly, term)
                 # print(type(x))
-                selected_advance.estimated_loan_monthly_payment = ((
+                advance_to_update.estimated_loan_monthly_payment = ((
                     amount * x * interest_rate_monthly
                 ) / (x - 1))
-                selected_advance.save()
-                print(selected_advance.status)
+                advance_to_update.save()
+                print(advance_to_update.status)
             if "is_submitting_loan" in request.data and request.data["is_submitting_loan"] == True:
-                print(selected_advance.status)
-                selected_advance.status = "Pending approval"
-                selected_advance.save()
-                print(selected_advance.status)
+                print(advance_to_update.status)
+                advance_to_update.status = "Pending approval"
+                advance_to_update.save()
+                print(advance_to_update.status)
             return Response(updated_advance.data, status=status.HTTP_202_ACCEPTED)
         except Exception as e:
             print(e)
