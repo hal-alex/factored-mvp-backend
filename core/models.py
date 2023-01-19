@@ -116,9 +116,9 @@ class Advance(models.Model):
     monthly_rent = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
     # Document uploads for the property
-    lease_agreement_file = models.FileField()
-    rent_protection_policy_file = models.FileField()
-    tenant_vetting_file = models.FileField()
+    lease_agreement_file = models.FileField(blank=True, null=True)
+    rent_protection_policy_file = models.FileField(blank=True, null=True)
+    tenant_vetting_file = models.FileField(blank=True, null=True)
 
     # This is how much the user would like to borrow, excludes interest
     # Previous value was amount_of_rent_selling
@@ -168,11 +168,11 @@ class Advance(models.Model):
         (0.1799, "17.99%"),
         (0.1599, "15.99%"),
         (0.1399, "13.99%"),
-        (0.1299, "12.99%")
+        (0.1299, "12.99%"),
     ]
 
-    loan_interest_rate = models.DecimalField(choices=LOAN_RATES,
-        max_digits=8, decimal_places=5, default=0.2399)
+    loan_interest_rate = models.FloatField(choices=LOAN_RATES,
+        default=0.2399)
 
     # Total loan amount (loan term * estimated_loan_monthly_payment)
     total_repayble = models.DecimalField(max_digits=8, 

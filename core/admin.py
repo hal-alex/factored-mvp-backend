@@ -6,6 +6,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
 from core import models
+from .models import AddressHistory, Advance
 
 
 class UserAdmin(BaseUserAdmin):
@@ -45,5 +46,18 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(models.User, UserAdmin)
-admin.site.register(models.Advance)
-admin.site.register(models.AddressHistory)
+# admin.site.register(models.Advance)
+
+@admin.register(Advance)
+class AdvanceAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'created_on', 'status', 
+    'postcode', 'monthly_rent', 'loan_amount', 'loan_interest_rate', 
+    'estimated_loan_monthly_payment',]
+    
+
+# admin.site.register(models.AddressHistory)
+
+@admin.register(AddressHistory)
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ['user', 'first_line_address', 'second_line_address',
+    'postcode', 'country', 'start_date', 'end_date', 'duration']
