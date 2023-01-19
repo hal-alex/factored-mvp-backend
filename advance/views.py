@@ -45,7 +45,7 @@ class AllAdvanceListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        advances = Advance.objects.filter(user_id=request.user.id)
+        advances = Advance.objects.filter(user_id=request.user.id).order_by("created_on")
         # print("advances ->", advances)
         serialized_advances = AdvanceListSerializer(advances, many=True)
         # print(serialized_advances)
@@ -79,6 +79,7 @@ class AdvanceDetailedView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     def patch(self, request, pk):
+        # print(request.data)
         advance_to_update = self.get_advance(pk=pk)
 
         print(advance_to_update.status)
@@ -87,7 +88,7 @@ class AdvanceDetailedView(APIView):
             return Response({"message": "Action not allowed"}, 
             status=status.HTTP_401_UNAUTHORIZED)
 
-        updated_advance = AdvanceSerializer(advance_to_update, data=request.data, partial=True)
+        updated_advance = AdvanceDetailSerializer(advance_to_update, data=request.data, partial=True)
         print(advance_to_update.status)
         try:
             updated_advance.is_valid(raise_exception=True)
