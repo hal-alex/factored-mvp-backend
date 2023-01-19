@@ -11,13 +11,6 @@ class AdvanceSerializer(serializers.ModelSerializer):
         model = Advance
         fields = ["id",
             "description",
-            "first_line_address",
-            "second_line_address",
-            "postcode",
-            "town_or_city",
-            "reason",
-            "loan_amount",
-            "monthly_rent",
             ]
         read_only_fields = ["id", "user_id", "status"]
 

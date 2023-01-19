@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.exceptions import NotFound 
 
 from core.models import Advance
-from .serializers import AdvanceSerializer, AdvanceDetailSerializer
+from .serializers import AdvanceSerializer, AdvanceDetailSerializer, AdvanceListSerializer
 
 from rest_framework.permissions import IsAuthenticated
 
@@ -31,13 +31,25 @@ class AdvanceListView(APIView):
             print(e)
             return Response(e, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
     
+    # def get(self, request):
+    #     advances = Advance.objects.filter(user_id=request.user.id)
+    #     # print("advances ->", advances)
+    #     serialized_advances = AdvanceSerializer(advances, many=True)
+    #     # print(serialized_advances)
+    #     return Response(serialized_advances.data, status=status.HTTP_200_OK)
+
+
+class AllAdvanceListView(APIView):
+    serializer_class = AdvanceListSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         advances = Advance.objects.filter(user_id=request.user.id)
         # print("advances ->", advances)
-        serialized_advances = AdvanceSerializer(advances, many=True)
+        serialized_advances = AdvanceListSerializer(advances, many=True)
         # print(serialized_advances)
         return Response(serialized_advances.data, status=status.HTTP_200_OK)
-
 
 class AdvanceDetailedView(APIView):
     serializer_class = AdvanceDetailSerializer

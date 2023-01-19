@@ -18,9 +18,10 @@
 # ]
 
 from django.urls import path
-from .views import AdvanceListView, AdvanceDetailedView
+from .views import AdvanceListView, AdvanceDetailedView, AllAdvanceListView
 
 urlpatterns = [
     path('', AdvanceListView.as_view()),
+    path('all/', AllAdvanceListView.as_view()),
     path('<pk>/', AdvanceDetailedView.as_view())
 ]
