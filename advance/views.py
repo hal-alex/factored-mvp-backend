@@ -79,7 +79,8 @@ class AdvanceDetailedView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     def patch(self, request, pk):
-        # print(request.data)
+        print(request.FILES)
+
         advance_to_update = self.get_advance(pk=pk)
 
         print(advance_to_update.status)
