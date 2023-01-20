@@ -50,12 +50,19 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 class ForgotPasswordView(APIView):
 
     def post(self, request):
+
         token = "".join(random.choice(string.ascii_uppercase + string.digits) 
-            for _ in range(40))
+            for _ in range(100))
+        
         PasswordResetToken.objects.create(
             email=request.data["email"],
             token=token
         )
+
+        user = User.objects.filter(email=request.data["email"])
+
+        if not user:
+            raise APIException("Invalid email address")
 
         url = "http://localhost:3000/password-reset/" + token
 
@@ -70,13 +77,13 @@ class ForgotPasswordView(APIView):
 
 class ResetPasswordView(APIView):
     def post(self, request):
-        
-        reset_password = PasswordResetToken.objects.filter(token=request.data["token"])
+        # print(request.data)
+        reset_password = PasswordResetToken.objects.filter(token=request.data["token"]).first()
 
         if not reset_password:
             raise APIException("Password reset link invalid")
 
-        user = User.objects.filter(email=reset_password.email)
+        user = User.objects.filter(email=reset_password.email).first()
 
         if not user:
             raise APIException("Invalid credentials")
