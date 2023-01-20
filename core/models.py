@@ -215,3 +215,8 @@ class AddressHistory(models.Model):
     end_date = models.CharField(max_length=255)
     duration = models.PositiveIntegerField()
 
+
+class PasswordResetToken(models.Model):
+    email = models.CharField(max_length=255)
+    token = models.CharField(max_length=255, unique=True)
+

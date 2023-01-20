@@ -6,6 +6,8 @@ from rest_framework import generics, authentication, permissions
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
 
+from core.models import PasswordResetToken
+
 from rest_framework.views import APIView
 
 from user.serializers import (
@@ -17,6 +19,9 @@ from django.core.mail import send_mail
 
 from rest_framework.response import Response
 from rest_framework import status
+
+import random
+import string
 
 class CreateUserView(generics.CreateAPIView):
     """Create a new user"""
@@ -39,13 +44,15 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
         return self.request.user
 
 
-class SendEmailView(APIView):
+class PasswordResetView(APIView):
 
-    def get(self, request):
-        send_mail('Alex testing Sendgrid integration', 
-        'Reset your password.', 
-        'notifications@factored.co', 
-        ['info@factored.co',], 
-        fail_silently=False)
-        return Response(status=status.HTTP_202_ACCEPTED)
+    def post(self, request):
+        token = "".join(random.choice(string.ascii_uppercase + string.digits) 
+            for _ in range(40))
+        PasswordResetToken.objects.create(
+            email=request.data["email"],
+            token=token
+        )
+        return Response(status=status.HTTP_201_CREATED)
+
 
