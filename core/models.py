@@ -71,6 +71,7 @@ class Advance(models.Model):
         editable=False,
         unique=True
     )
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
@@ -214,6 +215,44 @@ class AddressHistory(models.Model):
     start_date = models.CharField(max_length=255)
     end_date = models.CharField(max_length=255)
     duration = models.PositiveIntegerField()
+
+
+class ScheduledPayment(models.Model):
+    id = ShortUUIDField(
+        primary_key=True,
+        length=8,
+        alphabet="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",
+        editable=False,
+        unique=True
+    )
+    
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    advance = models.ForeignKey(
+        "core.Advance",
+        on_delete=models.CASCADE
+    )
+
+    ADVANCE_PAYMENT_STATE_OPTIONS = [
+        ("Not due yet", "Not due yet"),
+        ("Due", "Due"),
+        ("Paid", "Paid"),
+        ("Unpaid", "Unpaid"),
+    ]
+
+    status = models.CharField(
+        max_length=25,
+        choices=ADVANCE_PAYMENT_STATE_OPTIONS,
+        default="Not due yet"
+    )
+
+    amount = models.DecimalField(max_digits=8, 
+        decimal_places=2, default=0)
+    
+    due_date = models.DateField()
 
 
 class PasswordResetToken(models.Model):
