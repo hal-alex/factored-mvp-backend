@@ -4,7 +4,7 @@ Serializers for advance API
 
 from rest_framework import serializers
 
-from core.models import Advance
+from core.models import Advance, ScheduledPayment
 
 class AdvanceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -63,4 +63,10 @@ class AdvanceDetailSerializer(serializers.ModelSerializer):
 
         read_only_fields = ["id", "user_id", "status"]
 
+
+class ScheduledPaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ScheduledPayment
+        fields = "__all__"
+        read_only_fields = ["id", "user", "advance", "status", "amount", "due_date"]
 

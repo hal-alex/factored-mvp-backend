@@ -18,10 +18,14 @@
 # ]
 
 from django.urls import path
-from .views import AdvanceListView, AdvanceDetailedView, AllAdvanceListView
+from .views import (AdvanceListView, 
+AdvanceDetailedView, 
+AllAdvanceListView, 
+ScheduledPaymentView)
 
 urlpatterns = [
-    path('', AdvanceListView.as_view()),
+    path('advance-payments/', ScheduledPaymentView.as_view()),
+    path('create/', AdvanceListView.as_view()),
     path('all/', AllAdvanceListView.as_view()),
-    path('<pk>/', AdvanceDetailedView.as_view())
+    path('<pk>/', AdvanceDetailedView.as_view()),
 ]

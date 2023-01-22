@@ -12,6 +12,7 @@ shortuuid = "*"
 django-cors-headers = "*"
 boto3 = "*"
 django-storages = "*"
+pandas = "*"
 
 [dev-packages]
 
