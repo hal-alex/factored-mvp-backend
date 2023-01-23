@@ -13,6 +13,7 @@ django-cors-headers = "*"
 boto3 = "*"
 django-storages = "*"
 pandas = "*"
+gunicorn = "*"
 
 [dev-packages]
 
