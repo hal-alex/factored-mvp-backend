@@ -64,6 +64,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class Advance(models.Model):
     """Advance object"""
+
+    def get_path(instance, filename):
+        extension = filename.split('.')[-1]
+        uuid_unique = uuid.uuid4()
+        return f'{uuid_unique}.{extension}'
+
     id = ShortUUIDField(
         primary_key=True,
         length=8,
@@ -117,9 +123,9 @@ class Advance(models.Model):
     monthly_rent = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
     # Document uploads for the property
-    lease_agreement_file = models.FileField(blank=True, null=True)
-    rent_protection_policy_file = models.FileField(blank=True, null=True)
-    tenant_vetting_file = models.FileField(blank=True, null=True)
+    lease_agreement_file = models.FileField(blank=True, null=True, upload_to=get_path)
+    rent_protection_policy_file = models.FileField(blank=True, null=True, upload_to=get_path)
+    tenant_vetting_file = models.FileField(blank=True, null=True, upload_to=get_path)
 
     # This is how much the user would like to borrow, excludes interest
     # Previous value was amount_of_rent_selling
