@@ -37,13 +37,6 @@ class AdvanceListView(APIView):
         except Exception as e:
             print(e)
             return Response(e, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-    
-    # def get(self, request):
-    #     advances = Advance.objects.filter(user_id=request.user.id)
-    #     # print("advances ->", advances)
-    #     serialized_advances = AdvanceSerializer(advances, many=True)
-    #     # print(serialized_advances)
-    #     return Response(serialized_advances.data, status=status.HTTP_200_OK)
 
 
 class AllAdvanceListView(APIView):
@@ -58,6 +51,7 @@ class AllAdvanceListView(APIView):
         # print(serialized_advances)
         return Response(serialized_advances.data, status=status.HTTP_200_OK)
 
+
 class AdvanceDetailedView(APIView):
     serializer_class = AdvanceDetailSerializer
     authentication_classes = [TokenAuthentication]
@@ -68,7 +62,6 @@ class AdvanceDetailedView(APIView):
             return Advance.objects.get(pk=pk)
         except Advance.DoesNotExist:
             raise NotFound(detail="Advance not found")
-
 
     def get(self, request, pk):
         advance = self.get_advance(pk=pk)
@@ -145,18 +138,6 @@ class ScheduledPaymentView(APIView):
     serializer_class = ScheduledPaymentSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-
-    # def get_advance(self, pk):
-    #     try:
-    #         return Advance.objects.get(pk=pk)
-    #     except Advance.DoesNotExist:
-    #         raise NotFound(detail="Advance not found")
-
-
-    # def get(self, request, pk):
-    #     advance = self.get_advance(pk=pk)
-    #     serialized_advance = AdvanceDetailSerializer(advance)
-    #     return Response(serialized_advance.data)
     
     def get(self, request, pk):
         # print("request data", request)
