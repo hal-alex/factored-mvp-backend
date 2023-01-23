@@ -24,7 +24,7 @@ AllAdvanceListView,
 ScheduledPaymentView)
 
 urlpatterns = [
-    path('advance-payments/', ScheduledPaymentView.as_view()),
+    path('advance-payments/<pk>/', ScheduledPaymentView.as_view()),
     path('create/', AdvanceListView.as_view()),
     path('all/', AllAdvanceListView.as_view()),
     path('<pk>/', AdvanceDetailedView.as_view()),

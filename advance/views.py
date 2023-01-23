@@ -158,9 +158,9 @@ class ScheduledPaymentView(APIView):
     #     serialized_advance = AdvanceDetailSerializer(advance)
     #     return Response(serialized_advance.data)
     
-    def get(self, request):
-        print(request.data)
-        payments = ScheduledPayment.objects.filter(advance_id=request.data["advance_id"]).order_by("due_date")
+    def get(self, request, pk):
+        # print("request data", request)
+        payments = ScheduledPayment.objects.filter(advance_id=pk).order_by("due_date")
         # print("advances ->", advances)
         serialized_advances = ScheduledPaymentSerializer(payments, many=True)
         # print(serialized_advances)
