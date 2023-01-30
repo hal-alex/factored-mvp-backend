@@ -184,3 +184,5 @@ AWS_DEFAULT_ACL='public-read'
 AWS_DEFAULT_ACL = None
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880
