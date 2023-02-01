@@ -26,6 +26,8 @@ from rest_framework.exceptions import APIException
 import random
 import string
 
+persona_whitelisted_addresses = ["35.232.44.140", "34.69.131.123", "34.67.4.225"] 
+
 class CreateUserView(generics.CreateAPIView):
     """Create a new user"""
     serializer_class = UserSerializer
@@ -64,7 +66,7 @@ class ForgotPasswordView(APIView):
         if not user:
             raise APIException("Invalid email address")
 
-        url = "http://localhost:3000/password-reset/" + token
+        url = "https://app.factored.co/password-reset/" + token
 
         send_mail('Reset your Factored password',
         'Please click on the below link to reset your Factored password. %s' % url,
@@ -91,5 +93,20 @@ class ResetPasswordView(APIView):
         user.set_password(request.data["password"])
         user.save()
 
+        return Response(status=status.HTTP_200_OK)
+
+
+class PersonaWebHook(APIView):
+    def post(self, request):
+        ip = request.META['REMOTE_ADDR']
+        if ip in persona_whitelisted_addresses:
+            print(ip)
+            # print(request.data["data"]["attributes"]["payload"]["data"]["attributes"]["status"])
+            if request.data["data"]["attributes"]["payload"]["data"]["attributes"]["status"] == "passed":
+                user_id = request.data["data"]["attributes"]["payload"]["included"][0]["attributes"]["reference-id"]
+                requested_user = User.objects.get(id=user_id)
+                requested_user.is_identity_verified = True
+                requested_user.save()
+        
         return Response(status=status.HTTP_200_OK)
 
