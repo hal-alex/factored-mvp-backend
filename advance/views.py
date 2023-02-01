@@ -20,8 +20,11 @@ import datetime
 
 import pandas as pd
 
-terms_and_rates = [[3, 0.2399], [6, 0.2199], [12, 0.1999], [24, 0.1799],
-    [36, 0.1599], [48, 0.1399], [60, 0.1299]]
+terms_and_rates = [[3, 0.2299, 0.1289], [6, 0.2299, 0.1289],
+    [12, 0.2299, 0.1289], [24, 0.2099, 0.1166],
+    [36, 0.1899, 0.1065], [48, 0.1699, 0.0962], 
+    [60, 0.1499, 0.0854]
+]
 
 class AdvanceListView(APIView):
     serializer_class = AdvanceSerializer
@@ -97,9 +100,12 @@ class AdvanceDetailedView(APIView):
             updated_advance.save()
             # print(advance_to_update.status)
             if "loan_amount" in request.data and "loan_term" in request.data:
+                print("if statement triggered")
                 for rate in terms_and_rates:
                     if request.data["loan_term"] == rate[0]:
+                        print("for loop triggered")
                         advance_to_update.loan_interest_rate = rate[1]
+                        advance_to_update.annualised_fee = rate[2]
                         advance_to_update.save()
                 term = advance_to_update.loan_term
                 interest_rate = advance_to_update.loan_interest_rate

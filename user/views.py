@@ -1,6 +1,10 @@
 """
 Views for the user API.
 """
+import json
+
+from rest_framework.views import csrf_exempt
+from rest_framework.decorators import api_view
 
 from rest_framework import generics, authentication, permissions
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -96,17 +100,22 @@ class ResetPasswordView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class PersonaWebHook(APIView):
-    def post(self, request):
-        ip = request.META['REMOTE_ADDR']
-        if ip in persona_whitelisted_addresses:
-            print(ip)
-            # print(request.data["data"]["attributes"]["payload"]["data"]["attributes"]["status"])
-            if request.data["data"]["attributes"]["payload"]["data"]["attributes"]["status"] == "passed":
-                user_id = request.data["data"]["attributes"]["payload"]["included"][0]["attributes"]["reference-id"]
-                requested_user = User.objects.get(id=user_id)
-                requested_user.is_identity_verified = True
-                requested_user.save()
-        
-        return Response(status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@csrf_exempt
+def webhook(request):
+    # jsonfied_data = json.load(request.body)
+    # print(request.data)
+    # ip = request.META['REMOTE_ADDR']
+    # if ip in persona_whitelisted_addresses:
+        # print(ip)
+        # print(request.data["data"]["attributes"]["payload"]["data"]["attributes"]["status"])
+    # if jsonfied_data["data"]["attributes"]["payload"]["data"]["attributes"]["status"] == "passed":
+    #     user_id = request.data["data"]["attributes"]["payload"]["included"][0]["attributes"]["reference-id"]
+    #     requested_user = User.objects.get(id=user_id)
+    #     requested_user.is_identity_verified = True
+    #     requested_user.save()
+    
+    return Response(status=status.HTTP_200_OK)
 

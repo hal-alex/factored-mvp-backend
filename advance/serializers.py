@@ -28,7 +28,7 @@ class AdvanceListSerializer(serializers.ModelSerializer):
             "loan_amount",
             "loan_term",
             "estimated_loan_monthly_payment",
-            "loan_interest_rate",
+            "annualised_fee",
             ]
         
         read_only_fields = ["id", "user_id", "status"]
@@ -53,6 +53,7 @@ class AdvanceDetailSerializer(serializers.ModelSerializer):
             "loan_amount",
             "loan_term",
             "loan_interest_rate",
+            "annualised_fee",
             "name_on_bank_account",
             "bank_account_number",
             "sort_code_bank_account",
