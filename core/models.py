@@ -181,6 +181,17 @@ class Advance(models.Model):
     loan_interest_rate = models.FloatField(choices=LOAN_RATES,
         default=0.2399)
 
+    FEE_OPTIONS = [
+        (0.1289, "12.89%"),
+        (0.1166, "11.66%"),
+        (0.1065, "10.65%"),
+        (0.0962, "9.62%"),
+        (0.0854, "8.54%"),
+    ]
+    
+    annualised_fee = models.FloatField(choices=FEE_OPTIONS, 
+        default=0)
+
     # Total loan amount (loan term * estimated_loan_monthly_payment)
     total_repayble = models.DecimalField(max_digits=8, 
         decimal_places=2, default=0)
