@@ -12,5 +12,6 @@ urlpatterns = [
     path('token/', views.CreateTokenView.as_view()),
     path('me/', views.ManageUserView.as_view()),
     path('forgotpassword/', views.ForgotPasswordView.as_view()),
-    path('resetpassword/', views.ResetPasswordView.as_view())
+    path('resetpassword/', views.ResetPasswordView.as_view()),
+    path('persona_webhook/', views.PersonaWebHook.as_view()),
 ]

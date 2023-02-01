@@ -40,7 +40,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ["email",
+        fields = [
+        "id",
+        "email",
         "title",
         "password",
         "first_name",
@@ -50,6 +52,7 @@ class UserSerializer(serializers.ModelSerializer):
         "has_address_history",
         "total_address_duration",
         ]
+        read_only_fields = ["id"]
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
