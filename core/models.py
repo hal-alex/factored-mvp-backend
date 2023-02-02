@@ -116,7 +116,7 @@ class Advance(models.Model):
         default="Other"
     )
     first_line_address = models.CharField(max_length=255)
-    second_line_address = models.CharField(max_length=255)
+    second_line_address = models.CharField(blank=True, max_length=255)
     postcode = models.CharField(max_length=255)
     town_or_city = models.CharField(max_length=255)
     country = models.CharField(max_length=255)

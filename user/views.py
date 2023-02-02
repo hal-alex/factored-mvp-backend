@@ -105,17 +105,20 @@ class ResetPasswordView(APIView):
 @api_view(['POST'])
 @csrf_exempt
 def webhook(request):
-    # jsonfied_data = json.load(request.body)
-    # print(request.data)
+    jsonfied_data = json.loads(request.body.decode("utf-8")) 
+    # print(jsonfied_data)
     # ip = request.META['REMOTE_ADDR']
     # if ip in persona_whitelisted_addresses:
-        # print(ip)
-        # print(request.data["data"]["attributes"]["payload"]["data"]["attributes"]["status"])
-    # if jsonfied_data["data"]["attributes"]["payload"]["data"]["attributes"]["status"] == "passed":
-    #     user_id = request.data["data"]["attributes"]["payload"]["included"][0]["attributes"]["reference-id"]
-    #     requested_user = User.objects.get(id=user_id)
-    #     requested_user.is_identity_verified = True
-    #     requested_user.save()
-    
+    #     print(ip)
+    #     print(request.data["data"]["attributes"]["payload"]["data"]["attributes"]["status"])
+    # if request.body["data"]["attributes"]["payload"]["data"]["attributes"]["status"] == "passed":
+    #     print("h")
+
+    user_id = jsonfied_data["data"]["attributes"]["payload"]["included"][0]["attributes"]["reference-id"]
+    # print(user_id)
+    requested_user = User.objects.get(id=user_id)
+    requested_user.is_identity_verified = True
+    requested_user.save()
+
     return Response(status=status.HTTP_200_OK)
 
