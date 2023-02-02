@@ -100,10 +100,11 @@ class AdvanceDetailedView(APIView):
             updated_advance.save()
             # print(advance_to_update.status)
             if "loan_amount" in request.data and "loan_term" in request.data:
-                print("if statement triggered")
+                # print("if statement triggered")
                 for rate in terms_and_rates:
+                    # print("for loop started")
                     if request.data["loan_term"] == rate[0]:
-                        print("for loop triggered")
+                        # print("if statement inside loop triggered")
                         advance_to_update.loan_interest_rate = rate[1]
                         advance_to_update.annualised_fee = rate[2]
                         advance_to_update.save()
