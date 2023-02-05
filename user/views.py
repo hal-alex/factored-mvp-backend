@@ -107,16 +107,19 @@ class ResetPasswordView(APIView):
 @api_view(['POST'])
 @csrf_exempt
 def webhook(request):
-    jsonfied_data = json.loads(request.body.decode("utf-8"))
+    persona_ip_address = request.META.get('HTTP_X_FORWARDED_FOR').split(",")[0]
 
-    if jsonfied_data["data"]["attributes"]["payload"]["data"]["attributes"]["status"] == "passed":
-        user_id = jsonfied_data["data"]["attributes"]["payload"]["included"][0]["attributes"]["reference-id"]
-        requested_user = User.objects.get(id=user_id)
-        if not requested_user:
-            pass
-        else:
-            requested_user.is_identity_verified = True
-            requested_user.save()
+    if persona_ip_address in persona_whitelisted_addresses: 
+        jsonfied_data = json.loads(request.body.decode("utf-8"))
+
+        if jsonfied_data["data"]["attributes"]["payload"]["data"]["attributes"]["status"] == "passed":
+            user_id = jsonfied_data["data"]["attributes"]["payload"]["included"][0]["attributes"]["reference-id"]
+            requested_user = User.objects.get(id=user_id)
+            if not requested_user:
+                pass
+            else:
+                requested_user.is_identity_verified = True
+                requested_user.save()
 
     return Response(status=status.HTTP_200_OK)
 
