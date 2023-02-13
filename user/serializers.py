@@ -49,6 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
         "last_name",
         "mobile_number",
         "is_identity_verified",
+        "is_address_verified",
         "has_address_history",
         "total_address_duration",
         ]
