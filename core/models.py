@@ -52,6 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     mobile_number = models.CharField(max_length=255, default="")
 
     is_identity_verified = models.BooleanField(default=False)
+    is_address_verified = models.BooleanField(default=False)
     has_address_history = models.BooleanField(default=False)
     total_address_duration = models.PositiveIntegerField(default=0)
 

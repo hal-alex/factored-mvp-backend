@@ -3,8 +3,6 @@ Views for the user API.
 """
 import json
 
-import hmac
-
 from rest_framework.views import csrf_exempt
 from rest_framework.decorators import api_view
 
@@ -111,8 +109,9 @@ def webhook(request):
 
     if persona_ip_address in persona_whitelisted_addresses: 
         jsonfied_data = json.loads(request.body.decode("utf-8"))
+        type_of_verification = jsonfied_data["data"]["attributes"]["payload"]["data"]["type"]
 
-        if jsonfied_data["data"]["attributes"]["payload"]["data"]["attributes"]["status"] == "passed":
+        if type_of_verification == "verification/selfie" and jsonfied_data["data"]["attributes"]["payload"]["data"]["attributes"]["status"] == "passed":
             user_id = jsonfied_data["data"]["attributes"]["payload"]["included"][0]["attributes"]["reference-id"]
             requested_user = User.objects.get(id=user_id)
             if not requested_user:
@@ -120,6 +119,16 @@ def webhook(request):
             else:
                 requested_user.is_identity_verified = True
                 requested_user.save()
+
+        elif type_of_verification == "verification/document" and jsonfied_data["data"]["attributes"]["payload"]["data"]["attributes"]["status"] == "passed":
+            user_id = jsonfied_data["data"]["attributes"]["payload"]["included"][0]["attributes"]["reference-id"]
+            requested_user = User.objects.get(id=user_id)
+            if not requested_user:
+                pass
+            else:
+                requested_user.is_address_verified = True
+                requested_user.save()
+
 
     return Response(status=status.HTTP_200_OK)
 
