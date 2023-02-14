@@ -13,11 +13,11 @@ class UserAdmin(BaseUserAdmin):
     """Define the admin pages for users."""
     ordering = ['id']
     list_display = ['email', 'first_name', 'last_name', 
-    'mobile_number', 'is_identity_verified', 'has_address_history']
+    'mobile_number', 'is_identity_verified', 'is_address_verified', 'has_address_history']
     fieldsets = (
         (None, {'fields': ('email', 'password', 'id')}),
         (_('Personal Info'), {'fields': ('first_name', 'last_name',
-            'mobile_number','is_identity_verified', 'has_address_history' )}),
+            'mobile_number','is_identity_verified', 'is_address_verified', 'has_address_history' )}),
         (
             _('Permissions'),
             {
