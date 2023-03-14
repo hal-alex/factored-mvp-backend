@@ -212,6 +212,8 @@ class Advance(models.Model):
     admin_comment = models.TextField(max_length=1000, default="")
 
 
+
+# This model defines an address where a user has lived at for X amount of months
 class AddressHistory(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -235,7 +237,9 @@ class AddressHistory(models.Model):
     duration = models.PositiveIntegerField()
 
 
+# This model defines each payment that is scheduled to be paid by the user
 class ScheduledPayment(models.Model):
+    # Using short UUID to be more user friendly instead of UUID4
     id = ShortUUIDField(
         primary_key=True,
         length=8,
@@ -249,6 +253,7 @@ class ScheduledPayment(models.Model):
         on_delete=models.CASCADE
     )
 
+    # Each payment schedule belongs to an advance
     advance = models.ForeignKey(
         "core.Advance",
         on_delete=models.CASCADE
@@ -272,7 +277,7 @@ class ScheduledPayment(models.Model):
     
     due_date = models.DateField()
 
-
+# This is a model for the random token used for password reset
 class PasswordResetToken(models.Model):
     email = models.CharField(max_length=255)
     token = models.CharField(max_length=255, unique=True)

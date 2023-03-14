@@ -8,7 +8,9 @@ from rest_framework.exceptions import ValidationError
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for the user object"""
-
+    
+    # I was experimenting with custom validation error messages here
+    
     # def validate(self, data):
     #     title = data["title"]
     #     first_name = data["first_name"]
