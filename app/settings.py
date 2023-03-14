@@ -92,6 +92,7 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# The below if else block is for deployment only
 if 'RDS_DB_NAME' in os.environ:
     DATABASES = {
         'default': {
@@ -167,6 +168,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
 )
 
+# Sendgrid config 
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey' 
 EMAIL_HOST_PASSWORD = env('SENDGRID_API_KEY')
@@ -174,7 +176,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 # S3 setup
-
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')

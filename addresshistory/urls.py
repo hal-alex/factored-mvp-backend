@@ -1,3 +1,5 @@
+# URL mapping for address history endpoints
+
 from django.urls import path
 from .views import AddressHistoryListView, AddressHistoryDetailView
 

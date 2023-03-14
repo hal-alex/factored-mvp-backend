@@ -1,3 +1,5 @@
+# This handles the advance endpoint logic
+
 
 from rest_framework.views import APIView 
 from rest_framework.response import Response 
@@ -20,6 +22,8 @@ import datetime
 
 import pandas as pd
 
+# These are loan terms and rates used for backend calculations
+# This is done so that the client won't be able to game the calcs
 terms_and_rates = [[3, 0.2299, 0.1289], [6, 0.2299, 0.1289],
     [12, 0.2299, 0.1289], [24, 0.2099, 0.1166],
     [36, 0.1899, 0.1065], [48, 0.1699, 0.0962], 
@@ -31,6 +35,7 @@ class AdvanceListView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    # This creates the advance
     def post(self, request):
         advance_to_create = AdvanceSerializer(data=request.data)
         try:
@@ -47,6 +52,7 @@ class AllAdvanceListView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    # This fetches the advance list for the user dashboard
     def get(self, request):
         advances = Advance.objects.filter(user_id=request.user.id).order_by("created_on")
         # print("advances ->", advances)
@@ -60,17 +66,22 @@ class AdvanceDetailedView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    # This checks if the requested advance exists
     def get_advance(self, pk):
         try:
             return Advance.objects.get(pk=pk)
         except Advance.DoesNotExist:
             raise NotFound(detail="Advance not found")
 
+    # This fetches the requested advance details
     def get(self, request, pk):
         advance = self.get_advance(pk=pk)
         serialized_advance = AdvanceDetailSerializer(advance)
         return Response(serialized_advance.data)
     
+    # When the advance is in "Incomplete" state, then the user 
+    # is allowed to delete it 
+    # Else, the user cannot delete that advance
     def delete(self, request, pk):
         advance_to_delete = self.get_advance(pk=pk)
         
@@ -81,6 +92,8 @@ class AdvanceDetailedView(APIView):
         advance_to_delete.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+    # This allows the user to edit the advance details when 
+    # the advance is in "Incomplete" state
     def patch(self, request, pk):
         # print(request)
         # print(request.FILES)
@@ -89,6 +102,8 @@ class AdvanceDetailedView(APIView):
 
         # print(advance_to_update.status)
 
+        # We let the user edit advance details when the advance
+        # is in "Incomplete" state
         if advance_to_update.status != "Incomplete":
             return Response({"message": "Action not allowed"}, 
             status=status.HTTP_401_UNAUTHORIZED)
@@ -99,6 +114,8 @@ class AdvanceDetailedView(APIView):
             updated_advance.is_valid(raise_exception=True)
             updated_advance.save()
             # print(advance_to_update.status)
+            # The below if block calculates and sets the advance
+            # interest rate, term and total amount payable
             if "loan_amount" in request.data and "loan_term" in request.data:
                 # print("if statement triggered")
                 for rate in terms_and_rates:
@@ -121,6 +138,11 @@ class AdvanceDetailedView(APIView):
                 ) / (x - 1))
                 advance_to_update.save()
                 # print(advance_to_update.status)
+            # The below if block checks if the user is submitting the advance or not
+            # If they are submitting, then the advance status changes to
+            # "Pending approval"
+            # This triggers the for loop that generates a list of payments
+            # that the user will see on the frontend
             if "is_submitting_loan" in request.data and request.data["is_submitting_loan"] == True:
                 # print(advance_to_update.status)
                 advance_to_update.status = "Pending approval"
@@ -147,6 +169,7 @@ class ScheduledPaymentView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     
+    # This provides the schedule of all payments for the requested advance
     def get(self, request, pk):
         # print("request data", request)
         payments = ScheduledPayment.objects.filter(advance_id=pk).order_by("due_date")
@@ -154,37 +177,5 @@ class ScheduledPaymentView(APIView):
         serialized_advances = ScheduledPaymentSerializer(payments, many=True)
         # print(serialized_advances)
         return Response(serialized_advances.data, status=status.HTTP_200_OK)
-
-
-
-
-# """
-# Views for the advance API
-# """
-
-# from rest_framework import viewsets
-# from rest_framework.authentication import TokenAuthentication
-# from rest_framework.permissions import IsAuthenticated
-
-# from core.models import Advance
-# from advance import serializers
-
-# class AdvanceViewSet(viewsets.ModelViewSet):
-#     serializer_class = serializers.AdvanceDetailSerializer
-#     queryset = Advance.objects.all()
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-
-#     def get_queryset(self):
-#         return self.queryset.filter(user=self.request.user)
-
-#     def get_serializer_class(self):
-#         if self.action == "list":
-#             return serializers.AdvanceSerializer
-#         return self.serializer_class
-
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
-
 
 
